@@ -11,15 +11,15 @@ namespace Archiver
 {
 CommandLineParser::CommandLineParser(int argc, char * argv[])
 {
-    m_applicationName = argv[0];
+    m_ApplicationName = argv[0];
 
-    if (argc - 1 > 0)
+    if (argc > 1)
     {
-        m_allFilesNames.reserve(argc - 1);
+        m_InputFileNames.reserve(argc - 1);
 
         for (int i = 1; i < argc; ++i)
         {
-            m_allFilesNames.push_back(argv[i]);
+            m_InputFileNames.push_back(argv[i]);
         }
     }
     else

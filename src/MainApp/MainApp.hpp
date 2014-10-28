@@ -8,14 +8,6 @@
 #ifndef MAINAPP_HPP_
 #define MAINAPP_HPP_
 
-#include "../CommandLineParser/CommandLineParser.hpp"
-#include "../FileManager/FileManager.hpp"
-
-#include <iostream>
-#include <algorithm>
-#include <iterator>
-#include <boost/filesystem.hpp>
-
 namespace Archiver
 {
 
@@ -28,7 +20,6 @@ public:
     static void RunApp();
 
     static void CloseApp();
-
 
 private:
 

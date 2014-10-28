@@ -5,8 +5,12 @@
  *      Author: Oleksii Ozerov
  */
 
-
 #include "MainApp.hpp"
+
+#include "../CommandLineParser/CommandLineParser.hpp"
+#include "../FileManager/FileManager.hpp"
+
+#include <iostream>
 
 namespace Archiver
 {
@@ -19,16 +23,22 @@ void MainApp::CreateApp(int argc, char * argv[])
 
         auto fileNames = commandLineParser.GetAllFileNames();
 
-//        std::copy(fileNames.begin(), fileNames.end(), std::ostream_iterator<std::string>(std::cout, " "));
-//        std::cout << std::endl;
-
         FileManager fileManager(fileNames);
-        fileManager.PrintAllFiles();
+
+        std::vector<std::string> filesToArchive(fileManager.GetAllFiles());
+
+        std::copy(filesToArchive.begin(), filesToArchive.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
+        std::cout << std::endl;
     }
-    catch(CommandLineParser::CommandLineException & commandLineException)
+    catch(CommandLineException & commandLineException)
     {
-        std::cout << "Exception was thrown:" << std::endl;
+        std::cout << "Exception in CommandLineParser was thrown:" << std::endl;
         std::cout << commandLineException.what() << std::endl;
+    }
+    catch(FileManagerException & fileManagerException)
+    {
+        std::cout << "Exception in FileManager was thrown:" << std::endl;
+        std::cout << fileManagerException.what() << std::endl;
     }
 }
 
