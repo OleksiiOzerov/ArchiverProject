@@ -9,6 +9,7 @@
 
 #include "../CommandLineParser/CommandLineParser.hpp"
 #include "../FileManager/FileManager.hpp"
+#include "../FileManager/FileProperties/FileProperties.hpp"
 
 #include <iostream>
 
@@ -21,13 +22,16 @@ void MainApp::CreateApp(int argc, char * argv[])
     {
         CommandLineParser commandLineParser(argc, argv);
 
+        auto archiveName = commandLineParser.GetArchiveName();
+
         auto fileNames = commandLineParser.GetAllFileNames();
 
         FileManager fileManager(fileNames);
 
-        std::vector<std::string> filesToArchive(fileManager.GetAllFiles());
+        std::vector<FileProperties> filesToArchive = std::move(fileManager.GetAllFiles());
 
-        std::copy(filesToArchive.begin(), filesToArchive.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
+
+        std::copy(filesToArchive.begin(), filesToArchive.end(), std::ostream_iterator<FileProperties>(std::cout, "\n"));
         std::cout << std::endl;
     }
     catch(CommandLineException & commandLineException)

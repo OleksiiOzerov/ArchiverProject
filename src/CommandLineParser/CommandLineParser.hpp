@@ -26,9 +26,16 @@ public:
         return m_InputFileNames;
     }
 
+    const std::vector<std::string>& GetArchiveName() const
+    {
+        return m_InputFileNames;
+    }
+
 private:
 
     std::string                 m_ApplicationName;
+
+    std::string                 m_ArchiveName;
 
     std::vector<std::string>    m_InputFileNames;
 

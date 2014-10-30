@@ -10,12 +10,14 @@
 
 #include "FileManagerException.hpp"
 
+#include "FileProperties/FileProperties.hpp"
+
 #include <boost/filesystem.hpp>
 
 #include <string>
 #include <vector>
 #include <iterator>
-#include <iostream>
+
 
 namespace Archiver
 {
@@ -23,19 +25,17 @@ class FileManager
 {
 public:
 
-
     FileManager(std::vector<std::string>& fileNames);
 
-    std::vector<std::string> GetAllFiles() const;
+    std::vector<FileProperties> GetAllFiles() const;
 
     void PrintAllFiles() const;
 
 private:
 
+    FileProperties SetFileProperties(const boost::filesystem::path& filePath) const;
+
     std::vector<boost::filesystem::path> m_RootFilesCollection;
-
-    //std::vector<boost::filesystem::path>::iterator m_CurrentFile;
-
 
 };
 }
