@@ -40,7 +40,4 @@ private:
 };
 }
 
-
-
-
 #endif /* FILEMANAGER_HPP_ */

@@ -5,8 +5,8 @@
  *      Author: Oleksii Ozerov
  */
 
-#ifndef COMMANDLINEARGUMENTSPARSER_HPP_
-#define COMMANDLINEARGUMENTSPARSER_HPP_
+#ifndef COMMANDLINEPARSER_HPP_
+#define COMMANDLINEPARSER_HPP_
 
 #include "CommandLineException.hpp"
 
@@ -43,4 +43,4 @@ private:
 }
 
 
-#endif /* COMMANDLINEARGUMENTSPARSER_HPP_ */
+#endif /* COMMANDLINEPARSER_HPP_ */
