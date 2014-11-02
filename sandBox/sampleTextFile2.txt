@@ -13,5 +13,3 @@ This is another sample text file for archiver project.This is another sample tex
 
 
 End of file.
-
-

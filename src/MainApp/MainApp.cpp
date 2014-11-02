@@ -10,6 +10,7 @@
 #include "../CommandLineParser/CommandLineParser.hpp"
 #include "../FileManager/FileManager.hpp"
 #include "../FileManager/FileProperties/FileProperties.hpp"
+#include "../ArchiveWriter/ArchiveWriter.hpp"
 
 #include <iostream>
 
@@ -30,6 +31,8 @@ void MainApp::CreateApp(int argc, char * argv[])
 
         std::vector<FileProperties> filesToArchive = std::move(fileManager.GetAllFiles());
 
+        ArchiveWriter archiveWriter(archiveName, filesToArchive);
+        archiveWriter.WriteArchive();
 
         std::copy(filesToArchive.begin(), filesToArchive.end(), std::ostream_iterator<FileProperties>(std::cout, "\n"));
         std::cout << std::endl;

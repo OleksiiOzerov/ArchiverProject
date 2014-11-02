@@ -49,7 +49,6 @@ FileProperties FileManager::SetFileProperties(const boost::filesystem::path& fil
 
     fileProperties.SetFilePermissions(fileStatus.permissions());
 
-
     if (fileProperties.GetFileType() == boost::filesystem::regular_file)
     {
         fileProperties.SetFileSize(boost::filesystem::file_size(filePath));
@@ -68,13 +67,11 @@ std::vector<FileProperties> FileManager::GetAllFiles() const
      {
          if (boost::filesystem::is_regular_file(filePath))
          {
-             FileProperties fileProperties = SetFileProperties(filePath);
-
-             allRecursiveFiles.push_back(fileProperties);
+             allRecursiveFiles.push_back(SetFileProperties(filePath));
          }
          else if (boost::filesystem::is_directory(filePath))
          {
-             allRecursiveFiles.push_back(filePath.string());
+             allRecursiveFiles.push_back(SetFileProperties(filePath));
 
              for (boost::filesystem::recursive_directory_iterator fileIterator(filePath);
                   fileIterator != boost::filesystem::recursive_directory_iterator();
@@ -109,11 +106,6 @@ void FileManager::PrintAllFiles() const
                  ++fileIterator)
             {
 
-               // if (fileIterator.level() > 1)
-            //    {
-            //        fileIterator.pop();
-            //    }
-                //else
                 {
                     for (int i = 0; i <= fileIterator.level(); ++i)
                     {
@@ -121,10 +113,6 @@ void FileManager::PrintAllFiles() const
                     }
 
                     std::cout << fileIterator->path() << std::endl;
-//
-//                    if (boost::filesystem::is_regular_file(fileIterator->path()))
-//                    {
-//                    }
                 }
             }
         }
