@@ -36,9 +36,8 @@ private:
     std::string prefix;     /* 345 */
     std::string atime;      /* 476 */
     std::string ctime;      /* 488 */
-                            /* 500 */
-
-    const FileProperties m_FileProperties;
+    std::string end;        /* 500 */
+                            /* 512 */
 public:
 
     Header(const FileProperties& fileProperties);
@@ -49,7 +48,11 @@ private:
 
     void SetTypeFlag(boost::filesystem::file_type fileType);
 
-//    void SetMode(boost::filesystem::perms filePermissions);
+    void SetMode(boost::filesystem::perms filePermissions);
+
+    void SetSize(uintmax_t fileSize);
+
+    void SetMtime(std::time_t modificationTime);
 };
 }
 

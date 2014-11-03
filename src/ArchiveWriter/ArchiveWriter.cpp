@@ -29,33 +29,41 @@ ArchiveWriter::~ArchiveWriter()
 
 void ArchiveWriter::WriteFileContent(const std::string& fileName)
 {
-    m_TempInputFile.open(fileName, std::ifstream::in);
+    m_TempInputFile.open(fileName, std::ifstream::in | std::ifstream::binary);
 
     if (m_TempInputFile.is_open())
     {
 
-        while (std::getline(m_TempInputFile, m_FileLine))
+//        while (std::getline(m_TempInputFile, m_FileLine))
+//        {
+//
+//            m_FileContent += m_FileLine;
+//        }
+
+
+        //Todo: do optimization with reserve on whole file size
+        while (m_TempInputFile.good())
         {
-            m_FileContent += m_FileLine;
+            char byte = m_TempInputFile.get();
+
+            if (m_TempInputFile.good())
+            {
+                m_FileContent.push_back(byte);
+            }
         }
+
 
         if (!m_FileContent.empty())
         {
+            int lastBlockSize = m_FileContent.size() % 512 ;
+
+            m_FileContent.append(512 - lastBlockSize, '\0');
+
             m_ArchiveFile << m_FileContent;
-
-
-            std::string fileBlockEnd(332, '\0');
-            m_ArchiveFile << fileBlockEnd;
-
-//            //todo
-//            for (int i = 0; i < 332; ++i)
-//            {
-//                m_ArchiveFile.write() << '\0';
-//            }
 
             m_FileContent.clear();
         }
-
+        m_TempInputFile.clear();
         m_TempInputFile.close();
     }
 }
@@ -81,7 +89,7 @@ void ArchiveWriter::WriteArchive()
 
 void ArchiveWriter::WriteEndOfArchiveMarker()
 {
-    std::string endOfFileMarker(EndOfFileMarkerBytesNuber,'\0');
+    std::string endOfFileMarker(EndOfFileMarkerBytesNuber * 18,'\0');
 
     m_ArchiveFile << endOfFileMarker;
 }

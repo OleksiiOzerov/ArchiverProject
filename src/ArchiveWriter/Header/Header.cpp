@@ -9,6 +9,7 @@
 
 #include <iomanip>
 #include <algorithm>
+#include <sstream>
 
 namespace Archiver
 {
@@ -17,15 +18,16 @@ Header::Header(const FileProperties& fileProperties) :
                                  mode(8, '\0'), //Currently not using
                                  //uid(8, '\0'),
                                  //gid(8, '\0'),
-                                 uid({'0','0','1','7','5','0',' ','\0'}), //todo this is temporary solution
-                                 gid({'0','0','1','7','5','0',' ','\0'}), //todo this is temporary solution
+                                 uid({'0','0','0','1','7','5','0','\0'}), //todo this is temporary solution
+                                 gid({'0','0','0','1','7','5','0','\0'}), //todo this is temporary solution
                                  size(12, '\0'),
                                  mtime(12, '\0'),
                                  chksum(8, ' '),
                                  typeflag(1, '\0'),
                                  linkname(100, '\0'),
-                                 magic({'u','s','t','a','r','\0'}),
-                                 version(2, '\0'),
+                                 magic({'u','s','t','a','r',' '}),
+                                 //version(2, '\0'),
+                                 version({' ', '\0'}),
                                  uname(32, '\0'),
                                  gname(32, '\0'),
                                  devmajor(8, '\0'),
@@ -33,25 +35,54 @@ Header::Header(const FileProperties& fileProperties) :
                                  prefix(131, '\0'),
                                  atime(12, '\0'),
                                  ctime(12, '\0'),
-                                 m_FileProperties(fileProperties)
+                                 end(12, '\0')
 {
     const std::string& fileName = fileProperties.GetFileName();
     std::copy(fileName.begin(), fileName.end(), name.begin());
 
-//    SetMode(fileProperties.GetFilePermissions());
+    SetMode(fileProperties.GetFilePermissions());
+
+    SetSize(fileProperties.GetFileSize());
 
     SetTypeFlag(fileProperties.GetFileType());
 
+    SetMtime(fileProperties.GetileModificationTime());
+
+    uname.replace(0, 6, "ozerov");
+    gname.replace(0, 6, "ozerov");
 //    std::cout << mode << mode.size() << std::endl;
-    std::cout << magic << magic.size() << std::endl;
+//    std::cout << magic << magic.size() << std::endl;
 }
 
-//void Header::SetMode(boost::filesystem::perms filePermissions)
-//{
-//    mode.replace(0, 3, 3, '0');
-//    mode.replace(3, 3, std::to_string(filePermissions));
-//    mode[6] = ' ';
-//}
+void Header::SetMode(boost::filesystem::perms filePermissions)
+{
+    std::ostringstream filePermissionString;
+    filePermissionString << std::setbase(8);
+    filePermissionString << std::setw(7) << std::setfill('0');
+    filePermissionString << filePermissions;
+
+    mode.replace(0, 7, filePermissionString.str());
+}
+
+void Header::SetSize(uintmax_t fileSize)
+{
+    std::ostringstream fileSizeString;
+    fileSizeString << std::setbase(8);
+    fileSizeString << std::setw(11) << std::setfill('0');
+    fileSizeString << fileSize;
+
+    size.replace(0, 11, fileSizeString.str());
+}
+
+void Header::SetMtime(std::time_t modificationTime)
+{
+    std::ostringstream fileSizeString;
+    fileSizeString << std::setbase(8);
+    fileSizeString << std::setw(11) << std::setfill('0');
+    fileSizeString << modificationTime;
+
+    mtime.replace(0, 11, fileSizeString.str());
+}
 
 void Header::SetTypeFlag(boost::filesystem::file_type fileType)
 {
@@ -86,47 +117,75 @@ void Header::SetTypeFlag(boost::filesystem::file_type fileType)
     }
 }
 
+
 void Header::WriteToFile(std::ofstream& archiveFile)
 {
-    archiveFile << name;
+//    archiveFile << name;
+//
+//    archiveFile << mode;
+//
+//    archiveFile << uid;
+//    archiveFile << gid;
+//
+//    archiveFile << size;
+//
+//    archiveFile << mtime;
+//
+//    archiveFile << chksum;
+//    archiveFile << typeflag;
+//    archiveFile << linkname;
+//    archiveFile << magic;
+//    archiveFile << version;
+//    archiveFile << uname;
+//    archiveFile << gname;
+//    archiveFile << devmajor;
+//    archiveFile << devminor;
+//    archiveFile << prefix;
+//    archiveFile << atime;
+//    archiveFile << ctime;
+//    archiveFile << end;
 
-    //todo search for better solution
-    archiveFile << std::setbase(8);
-    archiveFile << "000";
-    archiveFile << m_FileProperties.GetFilePermissions();
-    archiveFile << ' ';
-    archiveFile << '\0';
-    archiveFile << std::setbase(10);
+    std::string archiveHeader;
+    archiveHeader.reserve(512);
 
-    archiveFile << uid;
-    archiveFile << gid;
+    archiveHeader += name;
+    archiveHeader += mode;
+    archiveHeader += uid;
+    archiveHeader += gid;
+    archiveHeader += size;
+    archiveHeader += mtime;
+    archiveHeader += chksum;
+    archiveHeader += typeflag;
+    archiveHeader += linkname;
+    archiveHeader += magic;
+    archiveHeader += version;
+    archiveHeader += uname;
+    archiveHeader += gname;
+    archiveHeader += devmajor;
+    archiveHeader += devminor;
+    archiveHeader += prefix;
+    archiveHeader += atime;
+    archiveHeader += ctime;
+    archiveHeader += end;
 
-    //todo search for better solution, not work properly
-    archiveFile << std::setbase(8);
-    //archiveFile << size;
-    archiveFile << m_FileProperties.GetFileSize();
-    archiveFile << ' ';
-    archiveFile << std::setbase(10);
+    std::cout << "Header size: " << archiveHeader.size() << std::endl;
 
-    //todo search for better solution, not work properly
-    archiveFile << std::setbase(8);
-    archiveFile << m_FileProperties.GetileModificationTime();
-    archiveFile << ' ';
-    //archiveFile << mtime;
-    archiveFile << std::setbase(10);
+    size_t chksumValue = 0;
+    for (auto byte : archiveHeader)
+    {
+        chksumValue += byte;
+    }
 
-    archiveFile << chksum;
-    archiveFile << typeflag;
-    archiveFile << linkname;
-    archiveFile << magic;
-    archiveFile << version;
-    archiveFile << uname;
-    archiveFile << gname;
-    archiveFile << devmajor;
-    archiveFile << devminor;
-    archiveFile << prefix;
-    archiveFile << atime;
-    archiveFile << ctime;
+    std::cout << "chksumValue " << chksumValue << std::endl;
+
+    std::ostringstream fileSizeString;
+    fileSizeString << std::setbase(8);
+    fileSizeString << std::setw(6) << std::setfill('0');
+    fileSizeString << chksumValue;
+    archiveHeader.replace(148, 6, fileSizeString.str());
+    archiveHeader[154] = '\0';
+
+    archiveFile << archiveHeader;
 }
 
 }
