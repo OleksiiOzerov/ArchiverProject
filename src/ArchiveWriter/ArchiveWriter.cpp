@@ -27,44 +27,41 @@ ArchiveWriter::~ArchiveWriter()
     m_ArchiveFile.close();
 }
 
-void ArchiveWriter::WriteFileContent(const std::string& fileName)
+void ArchiveWriter::WriteFileContent(const std::string& fileName, uintmax_t fileSize)
 {
-    m_TempInputFile.open(fileName, std::ifstream::in | std::ifstream::binary);
-
-    if (m_TempInputFile.is_open())
+    if (fileSize != 0)
     {
+        m_TempInputFile.open(fileName, std::ifstream::in | std::ifstream::binary);
 
-//        while (std::getline(m_TempInputFile, m_FileLine))
-//        {
-//
-//            m_FileContent += m_FileLine;
-//        }
-
-
-        //Todo: do optimization with reserve on whole file size
-        while (m_TempInputFile.good())
+        if (m_TempInputFile.is_open())
         {
-            char byte = m_TempInputFile.get();
+            int additionalByteNumber = 512 - fileSize % 512;
+            m_FileContent.reserve(fileSize + additionalByteNumber);
 
-            if (m_TempInputFile.good())
+            while (m_TempInputFile.good())
             {
-                m_FileContent.push_back(byte);
+                char byte = m_TempInputFile.get();
+
+                if (m_TempInputFile.good())
+                {
+                    m_FileContent.push_back(byte);
+                }
             }
+
+
+            if (!m_FileContent.empty())
+            {
+                int lastBlockSize = m_FileContent.size() % 512;
+
+                m_FileContent.append(512 - lastBlockSize, '\0');
+
+                m_ArchiveFile << m_FileContent;
+
+                m_FileContent.clear();
+            }
+            m_TempInputFile.clear();
+            m_TempInputFile.close();
         }
-
-
-        if (!m_FileContent.empty())
-        {
-            int lastBlockSize = m_FileContent.size() % 512 ;
-
-            m_FileContent.append(512 - lastBlockSize, '\0');
-
-            m_ArchiveFile << m_FileContent;
-
-            m_FileContent.clear();
-        }
-        m_TempInputFile.clear();
-        m_TempInputFile.close();
     }
 }
 
@@ -80,7 +77,7 @@ void ArchiveWriter::WriteArchive()
 
         if (fileIterator->GetFileType() == boost::filesystem::regular_file)
         {
-            WriteFileContent(fileIterator->GetFileName());
+            WriteFileContent(fileIterator->GetFileName(), fileIterator->GetFileSize());
         }
     }
 
@@ -89,7 +86,7 @@ void ArchiveWriter::WriteArchive()
 
 void ArchiveWriter::WriteEndOfArchiveMarker()
 {
-    std::string endOfFileMarker(EndOfFileMarkerBytesNuber * 18,'\0');
+    std::string endOfFileMarker(EndOfFileMarkerBytesNuber * 10,'\0');
 
     m_ArchiveFile << endOfFileMarker;
 }

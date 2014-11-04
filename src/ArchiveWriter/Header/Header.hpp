@@ -46,6 +46,8 @@ public:
 
 private:
 
+    static void WriteChksum(std::string& archiveHeader);
+
     void SetTypeFlag(boost::filesystem::file_type fileType);
 
     void SetMode(boost::filesystem::perms filePermissions);

@@ -25,17 +25,15 @@ class FileManager
 {
 public:
 
-    FileManager(std::vector<std::string>& fileNames);
+    FileManager(const std::vector<std::string>& fileNames);
 
-    std::vector<FileProperties> GetAllFiles() const;
-
-    void PrintAllFiles() const;
+    std::vector<FileProperties> GetAllFilesRecursively() const;
 
 private:
 
-    FileProperties SetFileProperties(const boost::filesystem::path& filePath) const;
+    FileProperties GetFileProperties(const boost::filesystem::path& filePath) const;
 
-    std::vector<boost::filesystem::path> m_RootFilesCollection;
+    std::vector<boost::filesystem::path> m_InputFilesCollection;
 
 };
 }

@@ -13,11 +13,11 @@
 namespace Archiver
 {
 
-FileManager::FileManager(std::vector<std::string>& inputFileNames)
+FileManager::FileManager(const std::vector<std::string>& inputFileNames)
 {
     if (!inputFileNames.empty())
     {
-        m_RootFilesCollection.reserve(inputFileNames.size());
+        m_InputFilesCollection.reserve(inputFileNames.size());
 
         boost::filesystem::path filePath;
         for (const auto & fileName : inputFileNames)
@@ -25,10 +25,10 @@ FileManager::FileManager(std::vector<std::string>& inputFileNames)
             filePath = fileName;
             if (boost::filesystem::exists(filePath))
             {
-                m_RootFilesCollection.push_back(std::move(filePath));
+                m_InputFilesCollection.push_back(std::move(filePath));
             }
         }
-        if (m_RootFilesCollection.empty())
+        if (m_InputFilesCollection.empty())
         {
             throw FileManagerException(NO_EXISTING_FILE_ERROR);
         }
@@ -39,7 +39,7 @@ FileManager::FileManager(std::vector<std::string>& inputFileNames)
     }
 }
 
-FileProperties FileManager::SetFileProperties(const boost::filesystem::path& filePath) const
+FileProperties FileManager::GetFileProperties(const boost::filesystem::path& filePath) const
 {
     FileProperties fileProperties(filePath.string());
 
@@ -59,26 +59,25 @@ FileProperties FileManager::SetFileProperties(const boost::filesystem::path& fil
     return fileProperties;
 }
 
-std::vector<FileProperties> FileManager::GetAllFiles() const
+std::vector<FileProperties> FileManager::GetAllFilesRecursively() const
 {
      std::vector<FileProperties> allRecursiveFiles;
 
-     for (auto & filePath : m_RootFilesCollection)
+     for (auto & filePath : m_InputFilesCollection)
      {
          if (boost::filesystem::is_regular_file(filePath))
          {
-             allRecursiveFiles.push_back(SetFileProperties(filePath));
+             allRecursiveFiles.push_back(GetFileProperties(filePath));
          }
          else if (boost::filesystem::is_directory(filePath))
          {
-             allRecursiveFiles.push_back(SetFileProperties(filePath));
+             allRecursiveFiles.push_back(GetFileProperties(filePath));
 
              for (boost::filesystem::recursive_directory_iterator fileIterator(filePath);
                   fileIterator != boost::filesystem::recursive_directory_iterator();
                   ++fileIterator)
              {
-
-                 allRecursiveFiles.push_back(SetFileProperties(fileIterator->path()));
+                 allRecursiveFiles.push_back(GetFileProperties(fileIterator->path()));
              }
          }
      }
@@ -86,37 +85,5 @@ std::vector<FileProperties> FileManager::GetAllFiles() const
      return allRecursiveFiles;
 }
 
-
-void FileManager::PrintAllFiles() const
-{
-    std::cout << "All " << m_RootFilesCollection.size() <<" files:" << std::endl;
-
-    for (auto & filePath : m_RootFilesCollection)
-    {
-        if (boost::filesystem::is_regular_file(filePath))
-        {
-            std::cout << "File: " << filePath << std::endl;
-        }
-        else if (boost::filesystem::is_directory(filePath))
-        {
-            std::cout << "Directory: " << filePath << std::endl;
-
-            for (boost::filesystem::recursive_directory_iterator fileIterator(filePath);
-                 fileIterator != boost::filesystem::recursive_directory_iterator();
-                 ++fileIterator)
-            {
-
-                {
-                    for (int i = 0; i <= fileIterator.level(); ++i)
-                    {
-                        std::cout << "-";
-                    }
-
-                    std::cout << fileIterator->path() << std::endl;
-                }
-            }
-        }
-    }
-}
 }
 

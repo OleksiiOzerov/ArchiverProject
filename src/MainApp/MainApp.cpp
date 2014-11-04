@@ -29,13 +29,14 @@ void MainApp::CreateApp(int argc, char * argv[])
 
         FileManager fileManager(fileNames);
 
-        std::vector<FileProperties> filesToArchive = std::move(fileManager.GetAllFiles());
+        std::vector<FileProperties> filesToArchive = std::move(fileManager.GetAllFilesRecursively());
 
         ArchiveWriter archiveWriter(archiveName, filesToArchive);
+
         archiveWriter.WriteArchive();
 
-        std::copy(filesToArchive.begin(), filesToArchive.end(), std::ostream_iterator<FileProperties>(std::cout, "\n"));
-        std::cout << std::endl;
+        //std::copy(filesToArchive.begin(), filesToArchive.end(), std::ostream_iterator<FileProperties>(std::cout, "\n"));
+        //std::cout << std::endl;
     }
     catch(CommandLineException & commandLineException)
     {

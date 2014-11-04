@@ -30,7 +30,7 @@ private:
 
     static const int EndOfFileMarkerBytesNuber = 512;
 
-    void WriteFileContent(const std::string& fileName);
+    void WriteFileContent(const std::string& fileName, uintmax_t fileSize);
 
     void WriteEndOfArchiveMarker();
 

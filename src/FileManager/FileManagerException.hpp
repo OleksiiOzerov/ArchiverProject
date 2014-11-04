@@ -24,7 +24,7 @@ public:
         switch(m_ErrorType)
         {
             case EMPTY_INPUT_ERROR:
-                return "There is no file in command line.";
+                return "There is no file on input.";
             case NO_EXISTING_FILE_ERROR:
                 return "There is no existing file on input.";
             default:

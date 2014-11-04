@@ -50,8 +50,6 @@ Header::Header(const FileProperties& fileProperties) :
 
     uname.replace(0, 6, "ozerov");
     gname.replace(0, 6, "ozerov");
-//    std::cout << mode << mode.size() << std::endl;
-//    std::cout << magic << magic.size() << std::endl;
 }
 
 void Header::SetMode(boost::filesystem::perms filePermissions)
@@ -117,34 +115,24 @@ void Header::SetTypeFlag(boost::filesystem::file_type fileType)
     }
 }
 
+void Header::WriteChksum(std::string& archiveHeader)
+{
+    size_t chksumValue = 0;
+    for (auto byte : archiveHeader)
+    {
+        chksumValue += byte;
+    }
+
+    std::ostringstream fileSizeString;
+    fileSizeString << std::setbase(8);
+    fileSizeString << std::setw(6) << std::setfill('0');
+    fileSizeString << chksumValue;
+    archiveHeader.replace(148, 6, fileSizeString.str());
+    archiveHeader[154] = '\0';
+}
 
 void Header::WriteToFile(std::ofstream& archiveFile)
 {
-//    archiveFile << name;
-//
-//    archiveFile << mode;
-//
-//    archiveFile << uid;
-//    archiveFile << gid;
-//
-//    archiveFile << size;
-//
-//    archiveFile << mtime;
-//
-//    archiveFile << chksum;
-//    archiveFile << typeflag;
-//    archiveFile << linkname;
-//    archiveFile << magic;
-//    archiveFile << version;
-//    archiveFile << uname;
-//    archiveFile << gname;
-//    archiveFile << devmajor;
-//    archiveFile << devminor;
-//    archiveFile << prefix;
-//    archiveFile << atime;
-//    archiveFile << ctime;
-//    archiveFile << end;
-
     std::string archiveHeader;
     archiveHeader.reserve(512);
 
@@ -168,22 +156,7 @@ void Header::WriteToFile(std::ofstream& archiveFile)
     archiveHeader += ctime;
     archiveHeader += end;
 
-    std::cout << "Header size: " << archiveHeader.size() << std::endl;
-
-    size_t chksumValue = 0;
-    for (auto byte : archiveHeader)
-    {
-        chksumValue += byte;
-    }
-
-    std::cout << "chksumValue " << chksumValue << std::endl;
-
-    std::ostringstream fileSizeString;
-    fileSizeString << std::setbase(8);
-    fileSizeString << std::setw(6) << std::setfill('0');
-    fileSizeString << chksumValue;
-    archiveHeader.replace(148, 6, fileSizeString.str());
-    archiveHeader[154] = '\0';
+    WriteChksum(archiveHeader);
 
     archiveFile << archiveHeader;
 }
