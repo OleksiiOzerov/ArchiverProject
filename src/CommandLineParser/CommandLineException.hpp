@@ -17,7 +17,7 @@ class CommandLineException : public std::exception
 public:
     virtual const char* what() const throw()
     {
-        return "Too few input arguments in console.";
+        return "There is no input arguments in console.";
     }
 };
 }

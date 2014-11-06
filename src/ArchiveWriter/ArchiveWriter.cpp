@@ -8,10 +8,10 @@
 
 #include "ArchiveWriter.hpp"
 
-#include "Header/Header.hpp"
+#include "HeaderWriter/HeaderWriter.hpp"
 
 #include <iostream>
-
+#include <sstream>
 namespace Archiver
 {
 
@@ -35,19 +35,15 @@ void ArchiveWriter::WriteFileContent(const std::string& fileName, uintmax_t file
 
         if (m_TempInputFile.is_open())
         {
-            int additionalByteNumber = 512 - fileSize % 512;
-            m_FileContent.reserve(fileSize + additionalByteNumber);
+            //another way to read a file need to check efficiency
+            //int additionalByteNumber = 512 - fileSize % 512;
+            //m_FileContent.reserve(fileSize + additionalByteNumber);
+            //m_FileContent.assign((std::istreambuf_iterator<char>(m_TempInputFile)),
+            //std::istreambuf_iterator<char>());
 
-            while (m_TempInputFile.good())
-            {
-                char byte = m_TempInputFile.get();
-
-                if (m_TempInputFile.good())
-                {
-                    m_FileContent.push_back(byte);
-                }
-            }
-
+            std::stringstream stringStream;
+            stringStream << m_TempInputFile.rdbuf();//read the file
+            m_FileContent = std::move(stringStream.str());
 
             if (!m_FileContent.empty())
             {
@@ -71,9 +67,9 @@ void ArchiveWriter::WriteArchive()
             fileIterator != m_FileCollection.end();
             ++fileIterator)
     {
-        Header header(*fileIterator);
+        HeaderWriter headerWriter(*fileIterator);
 
-        header.WriteToFile(m_ArchiveFile);
+        headerWriter.WriteToFile(m_ArchiveFile);
 
         if (fileIterator->GetFileType() == boost::filesystem::regular_file)
         {

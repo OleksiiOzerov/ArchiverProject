@@ -13,6 +13,7 @@
 
 int main(int argc, char* argv[])
 {
+    //std::cout << "привет";// << std::endl;
 
     Archiver::MainApp::CreateApp(argc, argv);
 

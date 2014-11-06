@@ -11,6 +11,8 @@
 #include "../FileManager/FileManager.hpp"
 #include "../FileManager/FileProperties/FileProperties.hpp"
 #include "../ArchiveWriter/ArchiveWriter.hpp"
+#include "../ArchiveReader/ArchiveReader.hpp"
+
 
 #include <iostream>
 
@@ -27,16 +29,20 @@ void MainApp::CreateApp(int argc, char * argv[])
 
         auto fileNames = commandLineParser.GetAllFileNames();
 
-        FileManager fileManager(fileNames);
+        if (!fileNames.empty())
+        {
+            FileManager fileManager(fileNames);
 
-        std::vector<FileProperties> filesToArchive = std::move(fileManager.GetAllFilesRecursively());
+            std::vector<FileProperties> filesToArchive = std::move(fileManager.GetAllFilesRecursively());
 
-        ArchiveWriter archiveWriter(archiveName, filesToArchive);
+            ArchiveWriter archiveWriter(archiveName, filesToArchive);
 
-        archiveWriter.WriteArchive();
-
-        //std::copy(filesToArchive.begin(), filesToArchive.end(), std::ostream_iterator<FileProperties>(std::cout, "\n"));
-        //std::cout << std::endl;
+            archiveWriter.WriteArchive();
+        }
+        else
+        {
+            ArchiveReader archiveReader(archiveName);
+        }
     }
     catch(CommandLineException & commandLineException)
     {

@@ -1,12 +1,12 @@
 /*
- * Header.hpp
+ * HeaderWriter.hpp
  *
  *  Created on: Nov 2, 2014
  *      Author: Oleksii Ozerov
  */
 
-#ifndef HEADER_HPP_
-#define HEADER_HPP_
+#ifndef HEADERWRITE_HPP_
+#define HEADERWRITE_HPP_
 
 #include "../../FileManager/FileProperties/FileProperties.hpp"
 
@@ -14,7 +14,7 @@
 #include <fstream>
 namespace Archiver
 {
-struct Header
+struct HeaderWriter
 {
 private:
 
@@ -40,7 +40,7 @@ private:
                             /* 512 */
 public:
 
-    Header(const FileProperties& fileProperties);
+    HeaderWriter(const FileProperties& fileProperties);
 
     void WriteToFile(std::ofstream& archiveFile);
 
@@ -58,4 +58,4 @@ private:
 };
 }
 
-#endif /* HEADER_HPP_ */
+#endif /* HEADERWRITER_HPP_ */

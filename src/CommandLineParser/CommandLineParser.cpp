@@ -13,15 +13,18 @@ CommandLineParser::CommandLineParser(int argc, char * argv[])
 {
     m_ApplicationName = argv[0];
 
-    if (argc > 2)
+    if (argc > 1)
     {
         m_ArchiveName = argv[1];
 
-        m_InputFileNames.reserve(argc - 2);
-
-        for (int i = 2; i < argc; ++i)
+        if (argc > 2)
         {
-            m_InputFileNames.push_back(argv[i]);
+            m_InputFileNames.reserve(argc - 2);
+
+            for (int i = 2; i < argc; ++i)
+            {
+                m_InputFileNames.push_back(argv[i]);
+            }
         }
     }
     else
