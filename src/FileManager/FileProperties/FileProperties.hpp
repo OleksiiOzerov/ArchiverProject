@@ -20,7 +20,9 @@ class FileProperties
 {
 public:
 
-    FileProperties(std::string fileName);
+    FileProperties(const std::string& fileName);
+
+    void SetFileName(const std::string& fileName);
 
     const std::string& GetFileName()const;
 
@@ -38,7 +40,7 @@ public:
 
     void SetFileModificationTime(std::time_t modificationTime);
 
-    std::time_t GetileModificationTime() const;
+    std::time_t GetFileModificationTime() const;
 
     friend std::ostream& operator<<(std::ostream& os, FileProperties file);
 

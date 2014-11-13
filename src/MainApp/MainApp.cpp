@@ -42,17 +42,24 @@ void MainApp::CreateApp(int argc, char * argv[])
         else
         {
             ArchiveReader archiveReader(archiveName);
+
+            archiveReader.ReadAllHeaders();
         }
     }
-    catch(CommandLineException & commandLineException)
+    catch(const CommandLineException& commandLineException)
     {
         std::cout << "Exception in CommandLineParser was thrown:" << std::endl;
         std::cout << commandLineException.what() << std::endl;
     }
-    catch(FileManagerException & fileManagerException)
+    catch(const FileManagerException& fileManagerException)
     {
         std::cout << "Exception in FileManager was thrown:" << std::endl;
         std::cout << fileManagerException.what() << std::endl;
+    }
+    catch(const ArchiveReaderException& archiveReaderException)
+    {
+        std::cout << "Exception in ArchiveReader was thrown:" << std::endl;
+        std::cout << archiveReaderException.what() << std::endl;
     }
 }
 

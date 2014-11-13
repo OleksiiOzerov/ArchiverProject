@@ -8,8 +8,13 @@
 #ifndef ARCHIVEREADER_HPP_
 #define ARCHIVEREADER_HPP_
 
+#include "../Header/HeaderReader/HeaderReader.hpp"
+#include "../Header/Header.hpp"
+#include "ArchiveReaderException.hpp"
+
 #include <string>
 #include <fstream>
+#include <vector>
 
 namespace Archiver
 {
@@ -28,6 +33,10 @@ private:
     std::string m_ArchiveName;
 
     std::ifstream m_ArchiveFile;
+
+    HeaderReader m_HeaderReader;
+
+    std::vector<Header> m_HeaderCollection;
 };
 }
 

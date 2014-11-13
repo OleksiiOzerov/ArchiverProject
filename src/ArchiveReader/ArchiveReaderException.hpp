@@ -13,30 +13,28 @@
 
 namespace Archiver
 {
-//enum FileManagerExceptionTypes {EMPTY_INPUT_ERROR, NO_EXISTING_FILE_ERROR};
+enum ArchiveReaderExceptionTypes {EMPTY_ARCHIVE_NAME, FILE_OPEN_ERROR};
 
 class ArchiveReaderException : public std::exception
 {
 public:
-    ArchiveReaderException(){}//(ArchiveReaderException errorType) : m_ErrorType(errorType) {}
+    ArchiveReaderException(ArchiveReaderExceptionTypes errorType) : m_ErrorType(errorType) {}
 
     virtual const char* what() const throw()
     {
-//        switch(m_ErrorType)
-//        {
-//            case EMPTY_INPUT_ERROR:
-//                return "There is no file on input.";
-//            case NO_EXISTING_FILE_ERROR:
-//                return "There is no existing file on input.";
-//            default:
-//                return "Unhandled error";
-//        }
-
-        return "Archive do not exist";
+        switch(m_ErrorType)
+        {
+            case EMPTY_ARCHIVE_NAME:
+                return "Empty archive name.";
+            case FILE_OPEN_ERROR:
+                return "Archive do not exist or couldn't be open.";
+            default:
+                return "Unhandled error";
+        }
     }
 
-//private:
-//    FileManagerExceptionTypes m_ErrorType;
+private:
+    ArchiveReaderExceptionTypes m_ErrorType;
 };
 }
 

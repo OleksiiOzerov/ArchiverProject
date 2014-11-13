@@ -12,6 +12,8 @@
 
 #include <string>
 #include <fstream>
+#include <sstream>
+
 namespace Archiver
 {
 struct HeaderWriter
@@ -38,6 +40,9 @@ private:
     std::string ctime;      /* 488 */
     std::string end;        /* 500 */
                             /* 512 */
+
+    std::ostringstream m_StringStream;
+
 public:
 
     HeaderWriter(const FileProperties& fileProperties);
@@ -46,7 +51,7 @@ public:
 
 private:
 
-    static void WriteChksum(std::string& archiveHeader);
+    void WriteChksum(std::string& archiveHeader);
 
     void SetTypeFlag(boost::filesystem::file_type fileType);
 

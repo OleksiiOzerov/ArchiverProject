@@ -11,10 +11,15 @@
 
 namespace Archiver
 {
-FileProperties::FileProperties(std::string fileName) : m_FileType(boost::filesystem::type_unknown),
+FileProperties::FileProperties(const std::string& fileName) : m_FileName(fileName),
+                                                       m_FileType(boost::filesystem::type_unknown),
                                                        m_FilePermissions(boost::filesystem::perms_not_known),
                                                        m_FileSize(0),
                                                        m_LastMoficationTime(0)
+{
+}
+
+void FileProperties::SetFileName(const std::string& fileName)
 {
     m_FileName = fileName;
 }
@@ -59,7 +64,7 @@ void FileProperties::SetFileModificationTime(std::time_t modificationTime)
     m_LastMoficationTime = modificationTime;
 }
 
-std::time_t FileProperties::GetileModificationTime() const
+std::time_t FileProperties::GetFileModificationTime() const
 {
     return m_LastMoficationTime;
 }
