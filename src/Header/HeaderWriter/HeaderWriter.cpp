@@ -37,7 +37,11 @@ HeaderWriter::HeaderWriter(const FileProperties& fileProperties) :
                                  ctime(12, '\0'),
                                  end(12, '\0')
 {
-    const std::string& fileName = fileProperties.GetFileName();
+    std::string fileName = fileProperties.GetFileName();
+
+    if (fileProperties.GetFileType() == boost::filesystem::directory_file)
+        fileName.append(1, '/');
+
     std::copy(fileName.begin(), fileName.end(), name.begin());
 
     SetMode(fileProperties.GetFilePermissions());

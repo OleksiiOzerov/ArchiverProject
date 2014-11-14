@@ -26,6 +26,8 @@ public:
 
     void ReadAllHeaders();
 
+    void WriteAllFiles();
+
 private:
 
     static const int BlockSize = 512;

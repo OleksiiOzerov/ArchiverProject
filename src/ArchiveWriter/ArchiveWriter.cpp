@@ -82,7 +82,7 @@ void ArchiveWriter::WriteArchive()
 
 void ArchiveWriter::WriteEndOfArchiveMarker()
 {
-    std::string endOfFileMarker(EndOfFileMarkerBytesNuber * 10,'\0');
+    std::string endOfFileMarker(EndOfFileMarkerBytesNuber * 10, '\0');
 
     m_ArchiveFile << endOfFileMarker;
 }

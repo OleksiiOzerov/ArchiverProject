@@ -44,6 +44,8 @@ void MainApp::CreateApp(int argc, char * argv[])
             ArchiveReader archiveReader(archiveName);
 
             archiveReader.ReadAllHeaders();
+
+            archiveReader.WriteAllFiles();
         }
     }
     catch(const CommandLineException& commandLineException)
